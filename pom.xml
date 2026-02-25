@@ -112,6 +112,13 @@
             <version>2.0.13</version>
             <scope>test</scope>
         </dependency>
+        <!-- Cucumber Picocontainer Dependency -->
+        <dependency>
+            <groupId>io.cucumber</groupId>
+            <artifactId>cucumber-picocontainer</artifactId>
+            <version>7.22.2</version>
+            <scope>test</scope>
+        </dependency>
     </dependencies>
     <!-- Maven Compiler Plugin -->
     <build>
