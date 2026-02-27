@@ -14,7 +14,7 @@ Feature: Delete Booking - DELETE /booking/{id}
     Then the response status code should be 404
 
   @auth @negative
-  Scenario Outline: D-02 Reject DELETE requests with missing or malformed auth cookie
+  Scenario: D-02 Reject DELETE requests with missing or malformed auth cookie
     When I cancel the booking with auth token ""
     Then the response status code should be 401
 

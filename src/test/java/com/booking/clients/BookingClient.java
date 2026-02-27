@@ -102,13 +102,11 @@ public class BookingClient {
     }
 
     /**
-     * DELETE /booking/{id} — deletes a booking.
-     * Note: the API returns 201 (not 200) on successful deletion per the OpenAPI spec.
-     *
-     * @param id           The booking ID.
-     * @param cookieHeader Cookie header string. Pass null to test unauthorized access.
-     * @return The full Rest-Assured Response.
-     */
+    * DELETE /booking/{id} — deletes a booking.
+    * Note: the live API returns 200 OK on successful deletion.
+    * The OpenAPI spec documents 201, but the actual behaviour differs —
+    * documented as a spec discrepancy finding.
+    */
     public Response deleteBooking(Object id, String cookieHeader) {
         RequestSpecification req = RestAssured.given(baseRequestSpec)
                 .pathParam("id", id);

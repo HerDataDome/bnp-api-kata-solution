@@ -80,8 +80,6 @@ public class BookingSteps {
      */
     private void extractAndStoreBookingId(Response response) {
         if (response.getStatusCode() == 201) {
-            //Integer bookingId = response.jsonPath().getInt("bookingid");
-            // DESERIALIZE INTO DTO INSTEAD OF JSONPATH
             com.booking.dto.BookingResponse bookingResponse = response.as(com.booking.dto.BookingResponse.class);
             Integer bookingId = bookingResponse.getBookingid();
             if (bookingId != null) {
@@ -406,8 +404,5 @@ public void theResponseBookingFieldShouldBe(String field, String expectedValue) 
         int actualRoomId = response.jsonPath().getInt("roomid");
         Allure.step("CONTRACT DEVIATION LOG: Sent roomid 99, but API ignored it and kept original roomid: " + actualRoomId);
         assertThat(actualRoomId).as("API ignores roomid updates on PUT").isNotEqualTo(99);
-
-        String actualEmail = response.jsonPath().getString("email");
-        Allure.step("CONTRACT DEVIATION LOG: API stripped email from PUT response.");
     }
 }
