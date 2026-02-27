@@ -57,4 +57,12 @@ public class CommonSteps {
                 .isEqualTo(expectedStatus);
     }
 
+    @Then("the response status code should be one of {int} or {int}")
+    public void theResponseStatusCodeShouldBeOneOf(int status1, int status2) {
+    Response response = context.get(ScenarioContext.ContextKey.LAST_RESPONSE);
+    assertThat(response.getStatusCode())
+            .as("Expected HTTP %d or %d but got %d", status1, status2, response.getStatusCode())
+            .isIn(status1, status2);
+}
+
 }

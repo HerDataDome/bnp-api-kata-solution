@@ -18,5 +18,7 @@ Feature: Authentication - Token Generation
     Examples:
       | username | password      |
       | admin    | wrongpassword |
+      | admin    |               |
       | baduser  | password      |
+      |          | wrongpassword |
       |          |               |

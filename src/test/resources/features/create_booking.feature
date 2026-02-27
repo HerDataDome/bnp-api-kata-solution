@@ -9,10 +9,10 @@ Feature: Create Booking - POST /booking
 
   # ── Happy Path ─────────────────────────────────────────────────────────────
 
-  @smoke @debug
+  @smoke
   Scenario: C-01 Successfully create a booking with all valid fields
     When I create a booking with the following details:
-      | roomid      | 9                        |
+      | roomid      | 8                        |
       | firstname   | John                     |
       | lastname    | Doe                      |
       | depositpaid | true                     |
@@ -24,7 +24,7 @@ Feature: Create Booking - POST /booking
     And the response should contain a numeric booking ID
     And the response booking details should match what was submitted
 
-  @contract
+  @contract @regression
   Scenario: C-02 Create booking response body matches the OpenAPI contract schema
     When I create a valid booking
     Then the response status code should be 201
@@ -46,13 +46,13 @@ Feature: Create Booking - POST /booking
 
   # ── Date Logic Validation ───────────────────────────────────────────────────
 
-  @negative
+  @negative @regression
   Scenario: C-04 Reject a booking where checkout date is before checkin date
     When I create a booking with checkin "2026-06-10" and checkout "2026-06-05"
     Then the response status code should be 409
     And the error response should contain "Failed to create booking"
 
-  @negative
+  @negative @regression
   Scenario: C-05 Reject a booking where checkout date equals checkin date
     When I create a booking with checkin "2026-06-10" and checkout "2026-06-10"
     Then the response status code should be 409
@@ -60,26 +60,26 @@ Feature: Create Booking - POST /booking
 
   # ── Schema & Data Type Invalidity ───────────────────────────────────────────
 
-  @negative @contract
+  @negative @contract @regression
   Scenario: C-06 Validation error response contains an errors array
     When I create a booking with firstname "Jo" and all other fields valid
     Then the response status code should be 400
     And the response should contain an "errors" field that is an array
     And the errors array should not be empty
 
-  @negative
+  @negative @regression
   Scenario: C-07 Document API behaviour when roomid is sent as a string instead of an integer
     When I create a booking with roomid as string value "two" and all other fields valid
     Then the response status code should be 400
     And the error response should contain "Failed to create booking"
 
-  @negative
+  @negative @regression
   Scenario: C-08 Document API behaviour when depositpaid is sent as an integer instead of a boolean
     When I create a booking with depositpaid as integer value 1 and all other fields valid
     Then the response status code should be 201
     And the response booking field "depositpaid" should be "true"
 
-  @negative
+  @negative @regression
   Scenario: C-09 Reject a booking when a required field is an empty string
     When I create a booking with roomid as empty string and all other fields valid
     Then the response status code should be 400
@@ -102,7 +102,7 @@ Feature: Create Booking - POST /booking
       | phone     | 01234567890                    |
       | phone     | 012345678901234567890          |
 
-  @negative
+  @negative @regression
   Scenario Outline: Validation rejects bookings violating field constraints
     When I create a booking with "<field>" set to "<invalid_value>" and all other fields valid
     Then the response status code should be 400

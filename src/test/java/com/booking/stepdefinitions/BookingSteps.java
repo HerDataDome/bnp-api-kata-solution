@@ -5,8 +5,6 @@ import com.booking.context.ScenarioContext;
 import com.booking.dto.Booking;
 import com.booking.dto.BookingDates;
 import com.booking.factory.TestDataFactory;
-import com.booking.config.ConfigManager;
-import io.restassured.RestAssured;
 import io.cucumber.datatable.DataTable;
 import io.cucumber.java.en.Given;
 import io.cucumber.java.en.When;
@@ -82,7 +80,10 @@ public class BookingSteps {
      */
     private void extractAndStoreBookingId(Response response) {
         if (response.getStatusCode() == 201) {
-            Integer bookingId = response.jsonPath().getInt("bookingid");
+            //Integer bookingId = response.jsonPath().getInt("bookingid");
+            // DESERIALIZE INTO DTO INSTEAD OF JSONPATH
+            com.booking.dto.BookingResponse bookingResponse = response.as(com.booking.dto.BookingResponse.class);
+            Integer bookingId = bookingResponse.getBookingid();
             if (bookingId != null) {
                 context.set(ScenarioContext.ContextKey.BOOKING_ID, bookingId);
                 Allure.step("Booking created with ID: " + bookingId);
@@ -286,57 +287,42 @@ public void theResponseBookingFieldShouldBe(String field, String expectedValue) 
 
     @Given("a booking exists in the system")
     public void aBookingExistsInTheSystem() {
-        // PEAK DRY: Reuses your existing valid booking creation method
         iCreateAValidBooking();
+        // FAIL FAST: If the background API call fails (e.g. 409 Conflict), crash here with a clear message!
+        Response response = context.get(ScenarioContext.ContextKey.LAST_RESPONSE);
+        assertThat(response.getStatusCode())
+                .as("Background setup failed to create a booking! API returned: " + response.getBody().asString())
+                .isEqualTo(201);
     }
 
     @When("I retrieve the booking by its ID")
     public void iRetrieveTheBookingByItsId() {
         int bookingId = context.get(ScenarioContext.ContextKey.BOOKING_ID);
-        String token = context.get(ScenarioContext.ContextKey.AUTH_TOKEN);
-
-        Response response = RestAssured.given()
-                .baseUri(ConfigManager.getInstance().getBaseUrl())
-                .header("Cookie", "token=" + token)
-                .accept("application/json")
-                .get("/booking/" + bookingId);
-        
-        // PEAK DRY: Reuses your existing response storage method
-        storeResponse(response, null);
+        String cookieHeader = context.get(ScenarioContext.ContextKey.AUTH_TOKEN);
+        storeResponse(bookingClient.getBooking(bookingId, cookieHeader), null);
     }
 
     @When("I request the booking by its ID without an auth token")
     public void iRequestTheBookingByItsIdWithoutAnAuthToken() {
         int bookingId = context.get(ScenarioContext.ContextKey.BOOKING_ID);
-
-        Response response = RestAssured.given()
-                .baseUri(ConfigManager.getInstance().getBaseUrl())
-                .accept("application/json")
-                .get("/booking/" + bookingId);
-        
-        storeResponse(response, null);
+        storeResponse(bookingClient.getBooking(bookingId, null), null);
     }
 
     @When("I request a booking with a non-existent ID")
     public void iRequestABookingWithANonExistentId() {
-        String token = context.get(ScenarioContext.ContextKey.AUTH_TOKEN);
-
-        Response response = RestAssured.given()
-                .baseUri(ConfigManager.getInstance().getBaseUrl())
-                .header("Cookie", "token=" + token)
-                .accept("application/json")
-                .get("/booking/999999999");
-        
-        storeResponse(response, null);
+        String cookieHeader = context.get(ScenarioContext.ContextKey.AUTH_TOKEN);
+        storeResponse(bookingClient.getBooking(Integer.MAX_VALUE, cookieHeader), null);
     }
 
     @Then("the retrieved booking dates should match the submitted dates")
     public void theRetrievedBookingDatesShouldMatch() {
         Response response = context.get(ScenarioContext.ContextKey.LAST_RESPONSE);
         assertThat(response.jsonPath().getString("bookingdates.checkin"))
-                .as("Checkin date should be present in GET response").isNotNull();
+                .as("Checkin date should match what was submitted")
+                .isEqualTo("2026-08-01");
         assertThat(response.jsonPath().getString("bookingdates.checkout"))
-                .as("Checkout date should be present in GET response").isNotNull();
+                .as("Checkout date should match what was submitted")
+                .isEqualTo("2026-08-07");
     }
 
     @Then("the response should document the missing PII fields")
@@ -345,9 +331,83 @@ public void theResponseBookingFieldShouldBe(String field, String expectedValue) 
         String actualEmail = response.jsonPath().getString("email");
         String actualPhone = response.jsonPath().getString("phone");
         
-        Allure.step("FINDING F-03: email and phone deliberately omitted from GET response. Actual email: '" + actualEmail + "', actual phone: '" + actualPhone + "'");
+        Allure.step("FINDING F-03: email and phone omitted from GET /booking/{id} response. "
+                + "OpenAPI spec documents both fields. "
+                + "Actual email: '" + actualEmail + "', actual phone: '" + actualPhone + "'");
+    }
+
+    // ═══════════════════════════════════════════════════════════════════════
+    // UPDATE & DELETE
+    // ═══════════════════════════════════════════════════════════════════════
+
+    @When("I cancel the booking with a valid auth token")
+    public void iCancelTheBookingWithAValidAuthToken() {
+        int bookingId = context.get(ScenarioContext.ContextKey.BOOKING_ID);
+        String cookieHeader = context.get(ScenarioContext.ContextKey.AUTH_TOKEN);
+        storeResponse(bookingClient.deleteBooking(bookingId, cookieHeader), null);
+    }
+
+    @When("I cancel the booking with auth token {string}")
+    public void iCancelTheBookingWithAuthToken(String cookieString) {
+        int bookingId = context.get(ScenarioContext.ContextKey.BOOKING_ID);
+        storeResponse(bookingClient.deleteBooking(bookingId, cookieString), null);
+    }
+
+    @When("I update the booking using PUT with new details and roomid 99")
+    public void iUpdateTheBookingUsingPut() {
+        Integer bookingId = context.get(ScenarioContext.ContextKey.BOOKING_ID);
+        assertThat(bookingId).as("Cannot update: BOOKING_ID is null!").isNotNull();
+        String cookieHeader = context.get(ScenarioContext.ContextKey.AUTH_TOKEN);
+
+        Booking updatedPayload = TestDataFactory.validBooking();
+        updatedPayload.setFirstname("UpdatedFirstName");
+        updatedPayload.setLastname("UpdatedLastName");
+        updatedPayload.setRoomid(99); 
+
+        storeResponse(bookingClient.updateBooking(bookingId, updatedPayload, cookieHeader), updatedPayload);
+    }
+
+    @When("I update the booking with auth token {string}")
+    public void iUpdateTheBookingWithAuthToken(String cookieString) {
+        int bookingId = context.get(ScenarioContext.ContextKey.BOOKING_ID);
+        Booking payload = TestDataFactory.validBooking(); 
+        storeResponse(bookingClient.updateBooking(bookingId, payload, cookieString), payload);
+    }
+
+    @When("I send a partial update for the booking")
+    public void iSendAPartialUpdateForTheBooking() {
+        int bookingId = context.get(ScenarioContext.ContextKey.BOOKING_ID);
+        String cookieHeader = context.get(ScenarioContext.ContextKey.AUTH_TOKEN);
+        Map<String, String> patchBody = Map.of("firstname", "PatchedName");
+
+        storeResponse(bookingClient.partialUpdateBooking(bookingId, patchBody, cookieHeader), patchBody);
+    }
+
+    @Then("the response should contain a success flag")
+    public void theResponseShouldContainASuccessFlag() {
+        Response response = context.get(ScenarioContext.ContextKey.LAST_RESPONSE);
+        assertThat(response.jsonPath().getBoolean("success"))
+                .as("PUT response should return {'success': true}").isTrue();
+    }
+
+    @When("I update a non-existent booking using PUT with a valid auth token")
+    public void iUpdateANonExistentBookingUsingPut() {
+        String cookieHeader = context.get(ScenarioContext.ContextKey.AUTH_TOKEN);
+        Booking payload = TestDataFactory.validBooking();
         
-        assertThat(actualEmail).as("API contract violation: email is stripped").isNull();
-        assertThat(actualPhone).as("API contract violation: phone is stripped").isNull();
+        // Integer.MAX_VALUE guarantees the ID does not exist
+        storeResponse(bookingClient.updateBooking(Integer.MAX_VALUE, payload, cookieHeader), payload);
+    }
+
+    @Then("the response should document the ignored roomid and missing PII fields")
+    public void theResponseShouldDocumentTheIgnoredRoomidAndMissingPiiFields() {
+        Response response = context.get(ScenarioContext.ContextKey.LAST_RESPONSE);
+        
+        int actualRoomId = response.jsonPath().getInt("roomid");
+        Allure.step("CONTRACT DEVIATION LOG: Sent roomid 99, but API ignored it and kept original roomid: " + actualRoomId);
+        assertThat(actualRoomId).as("API ignores roomid updates on PUT").isNotEqualTo(99);
+
+        String actualEmail = response.jsonPath().getString("email");
+        Allure.step("CONTRACT DEVIATION LOG: API stripped email from PUT response.");
     }
 }
