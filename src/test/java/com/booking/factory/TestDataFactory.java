@@ -23,14 +23,22 @@ public final class TestDataFactory {
      * Generates a fully valid booking baseline.
      */
     public static Booking validBooking() {
+        // Dynamic dates: Safely within a 6-month window to avoid API "too far in future" blocks.
+        // Starts 2 month from today, adds 0-99 days randomly to prevent test collisions.
+        java.time.LocalDate checkin = java.time.LocalDate.now()
+                .plusMonths(2)
+                .plusDays(System.currentTimeMillis() % 100);
+        // Dynamic Room ID: Randomize between 1 and 199 to prevent 409 test data collisions
+        int randomRoomId = java.util.concurrent.ThreadLocalRandom.current().nextInt(1, 200);
+
         return Booking.builder()
-                .roomid(1)
+                .roomid(randomRoomId)
                 .firstname("John")
                 .lastname("Doe")
                 .depositpaid(true)
                 .bookingdates(BookingDates.builder()
-                        .checkin("2026-06-01")
-                        .checkout("2026-06-05")
+                        .checkin(checkin.toString())
+                        .checkout(checkin.plusDays(4).toString())
                         .build())
                 .email("john.doe@example.com")
                 .phone("07911123456")
@@ -70,6 +78,15 @@ public final class TestDataFactory {
         return booking;
     }
 
+    /**
+     * Data-type negative testing: Passing roomid as an empty string.
+     */
+    public static Map<String, Object> bookingWithRoomIdAsEmptyString() {
+        Booking validBooking = validBooking();
+        Map<String, Object> bookingMap = mapper.convertValue(validBooking, new TypeReference<Map<String, Object>>() {});
+        bookingMap.put("roomid", "");
+        return bookingMap;
+    }
     /**
      * Data-type negative testing: Passing a String instead of an Integer.
      */

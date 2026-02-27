@@ -1,0 +1,1 @@
+Booking(roomid=2, firstname=John, lastname=Doe, depositpaid=true, bookingdates=BookingDates(checkin=2027-03-04, checkout=2027-03-08), email=john.doe@example.com, phone=012345678901234567890)

@@ -1,0 +1,11 @@
+{
+    "bookingid": 9,
+    "roomid": 1,
+    "firstname": "Jane",
+    "lastname": "Smith",
+    "depositpaid": false,
+    "bookingdates": {
+        "checkin": "2026-07-10",
+        "checkout": "2026-07-14"
+    }
+}

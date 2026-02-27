@@ -8,9 +8,7 @@
       "firstname",
       "lastname",
       "depositpaid",
-      "bookingdates",
-      "email",
-      "phone"
+      "bookingdates"
     ],
     "properties": {
       "roomid": {

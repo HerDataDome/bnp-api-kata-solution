@@ -9,17 +9,15 @@ import io.restassured.specification.RequestSpecification;
 
 /**
  * HTTP client for the Booking API (/booking and /booking/{id}).
- * Encapsulates the Rest-Assured RequestSpecification so step definitions
- * contain zero HTTP boilerplate.
+ * Encapsulates the Rest-Assured RequestSpecification so step definitions contain zero HTTP boilerplate.
  *
  * Payload parameters are typed as Object (not Booking DTO) intentionally:
- * negative tests for C-20 and C-21 require sending malformed types
- * (e.g. a String for roomid, an Integer for depositpaid). A typed Booking
- * parameter would make those tests impossible to write.
+ * negative tests require sending malformed types
+ * (e.g. a String for roomid, an Integer for depositpaid).
+ * A typed Booking parameter would make those tests impossible to write.
  *
- * All methods return the full Rest-Assured Response object, allowing step
- * definitions to assert both success and failure scenarios without losing
- * the response chain.
+ * All methods return the full Rest-Assured Response object, allowing step definitions to assert both success and failure scenarios
+ * without losing the response chain.
  *
  * Note: BookingClient and AuthClient are intentionally instantiated with
  * new() in Hooks rather than injected via PicoContainer. Both clients are

@@ -14,4 +14,5 @@ public final class ApiEndpoints {
     public static final String AUTH_PATH    = "/auth/login";
     public static final String BOOKING_PATH = "/booking";
     public static final String BOOKING_BY_ID_PATH = "/booking/{id}";
+    public static final String HEALTH_PATH = "/booking/actuator/health";
 }
