@@ -5,9 +5,13 @@ import com.booking.context.ScenarioContext;
 import com.booking.dto.Booking;
 import com.booking.dto.BookingDates;
 import com.booking.factory.TestDataFactory;
+import com.booking.config.ConfigManager;
+import io.restassured.RestAssured;
 import io.cucumber.datatable.DataTable;
-import io.cucumber.java.en.And;
+import io.cucumber.java.en.Given;
 import io.cucumber.java.en.When;
+import io.cucumber.java.en.And;
+import io.cucumber.java.en.Then;
 import io.qameta.allure.Allure;
 import io.restassured.module.jsv.JsonSchemaValidator;
 import io.restassured.response.Response;
@@ -90,6 +94,7 @@ public class BookingSteps {
     // CREATE — create_booking.feature
     // ═══════════════════════════════════════════════════════════════════════
 
+    @Given("I have created a booking with the following details:")
     @When("I create a booking with the following details:")
     public void iCreateABookingWithTheFollowingDetails(DataTable dataTable) {
         Booking booking = buildBookingFromTable(dataTable);
@@ -205,12 +210,13 @@ public class BookingSteps {
     // firstname, lastname, depositpaid, and bookingdates.
     // email and phone are deliberately omitted — see FINDING F-03 below.
     assertThat(response.jsonPath().getInt("roomid"))
-            .as("roomid should be present and positive in create response")
-            .isPositive();
+            .as("roomid should be present and positive in create response").isPositive();
     assertThat(response.jsonPath().getString("firstname"))
             .as("firstname should be present in create response").isNotNull();
     assertThat(response.jsonPath().getString("lastname"))
             .as("lastname should be present in create response").isNotNull();
+            assertThat(response.jsonPath().getString("depositpaid"))
+            .as("depositpaid should be present in create response").isNotNull();
     assertThat(response.jsonPath().getString("bookingdates.checkin"))
             .as("bookingdates.checkin should be present in create response").isNotNull();
     assertThat(response.jsonPath().getString("bookingdates.checkout"))
@@ -272,5 +278,76 @@ public void theResponseBookingFieldShouldBe(String field, String expectedValue) 
                 .as("Expected error response body to contain '%s'.\nActual body: %s",
                         expectedMessage, body)
                 .contains(expectedMessage);
+    }
+
+    // ═══════════════════════════════════════════════════════════════════════
+    // READ — read_booking.feature
+    // ═══════════════════════════════════════════════════════════════════════
+
+    @Given("a booking exists in the system")
+    public void aBookingExistsInTheSystem() {
+        // PEAK DRY: Reuses your existing valid booking creation method
+        iCreateAValidBooking();
+    }
+
+    @When("I retrieve the booking by its ID")
+    public void iRetrieveTheBookingByItsId() {
+        int bookingId = context.get(ScenarioContext.ContextKey.BOOKING_ID);
+        String token = context.get(ScenarioContext.ContextKey.AUTH_TOKEN);
+
+        Response response = RestAssured.given()
+                .baseUri(ConfigManager.getInstance().getBaseUrl())
+                .header("Cookie", "token=" + token)
+                .accept("application/json")
+                .get("/booking/" + bookingId);
+        
+        // PEAK DRY: Reuses your existing response storage method
+        storeResponse(response, null);
+    }
+
+    @When("I request the booking by its ID without an auth token")
+    public void iRequestTheBookingByItsIdWithoutAnAuthToken() {
+        int bookingId = context.get(ScenarioContext.ContextKey.BOOKING_ID);
+
+        Response response = RestAssured.given()
+                .baseUri(ConfigManager.getInstance().getBaseUrl())
+                .accept("application/json")
+                .get("/booking/" + bookingId);
+        
+        storeResponse(response, null);
+    }
+
+    @When("I request a booking with a non-existent ID")
+    public void iRequestABookingWithANonExistentId() {
+        String token = context.get(ScenarioContext.ContextKey.AUTH_TOKEN);
+
+        Response response = RestAssured.given()
+                .baseUri(ConfigManager.getInstance().getBaseUrl())
+                .header("Cookie", "token=" + token)
+                .accept("application/json")
+                .get("/booking/999999999");
+        
+        storeResponse(response, null);
+    }
+
+    @Then("the retrieved booking dates should match the submitted dates")
+    public void theRetrievedBookingDatesShouldMatch() {
+        Response response = context.get(ScenarioContext.ContextKey.LAST_RESPONSE);
+        assertThat(response.jsonPath().getString("bookingdates.checkin"))
+                .as("Checkin date should be present in GET response").isNotNull();
+        assertThat(response.jsonPath().getString("bookingdates.checkout"))
+                .as("Checkout date should be present in GET response").isNotNull();
+    }
+
+    @Then("the response should document the missing PII fields")
+    public void theResponseShouldDocumentTheMissingPIIFields() {
+        Response response = context.get(ScenarioContext.ContextKey.LAST_RESPONSE);
+        String actualEmail = response.jsonPath().getString("email");
+        String actualPhone = response.jsonPath().getString("phone");
+        
+        Allure.step("FINDING F-03: email and phone deliberately omitted from GET response. Actual email: '" + actualEmail + "', actual phone: '" + actualPhone + "'");
+        
+        assertThat(actualEmail).as("API contract violation: email is stripped").isNull();
+        assertThat(actualPhone).as("API contract violation: phone is stripped").isNull();
     }
 }

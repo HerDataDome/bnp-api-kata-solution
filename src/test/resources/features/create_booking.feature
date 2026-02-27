@@ -9,10 +9,10 @@ Feature: Create Booking - POST /booking
 
   # ── Happy Path ─────────────────────────────────────────────────────────────
 
-  @smoke
+  @smoke @debug
   Scenario: C-01 Successfully create a booking with all valid fields
     When I create a booking with the following details:
-      | roomid      | 6                        |
+      | roomid      | 9                        |
       | firstname   | John                     |
       | lastname    | Doe                      |
       | depositpaid | true                     |
