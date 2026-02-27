@@ -1,0 +1,22 @@
+[
+    {
+      "name": "API Spec Discrepancies",
+      "matchedStatuses": ["failed"],
+      "messageRegex": ".*FINDING.*"
+    },
+    {
+      "name": "Known Bugs",
+      "matchedStatuses": ["failed"],
+      "titleRegex": ".*@bug.*"
+    },
+    {
+      "name": "Auth Failures",
+      "matchedStatuses": ["failed"],
+      "titleRegex": ".*(401|403|auth).*"
+    },
+    {
+      "name": "Test Infrastructure Failures",
+      "matchedStatuses": ["broken"],
+      "messageRegex": ".*setup.*|.*Background.*|.*health.*"
+    }
+  ]

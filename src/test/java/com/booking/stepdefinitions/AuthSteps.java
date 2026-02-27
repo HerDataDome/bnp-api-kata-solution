@@ -9,6 +9,9 @@ import io.cucumber.java.en.Given;
 import io.cucumber.java.en.Then;
 import io.cucumber.java.en.When;
 import io.restassured.response.Response;
+import io.qameta.allure.Description;
+import io.qameta.allure.Severity;
+import io.qameta.allure.SeverityLevel;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -21,6 +24,9 @@ public class AuthSteps {
         this.authClient = new AuthClient();
     }
 
+    @Severity(SeverityLevel.BLOCKER)
+    @Description("Sends POST /auth/login with the supplied credentials. " +
+             "Used for both valid (200) and invalid (401) token generation scenarios.")
     @When("I request a token with username {string} and password {string}")
     public void iRequestATokenWithUsernameAndPassword(String username, String password) {
         TokenRequest tokenRequest = TokenRequest.builder()
@@ -32,6 +38,7 @@ public class AuthSteps {
         context.set(ScenarioContext.ContextKey.LAST_RESPONSE, response);
     }
 
+    @Severity(SeverityLevel.BLOCKER)
     @Then("the response should contain a non-empty token")
     public void theResponseShouldContainANonEmptyToken() {
         Response response = context.get(ScenarioContext.ContextKey.LAST_RESPONSE);
@@ -39,6 +46,9 @@ public class AuthSteps {
         assertThat(tokenResponse.getToken()).as("Expected a token in the response").isNotBlank();
     }
 
+    @Severity(SeverityLevel.BLOCKER)
+    @Description("Background setup: generates a valid admin token and stores it in ScenarioContext " +
+             "for use by subsequent steps that require authentication.")
     @Given("I have a valid authentication token")
     public void iHaveAValidAuthenticationToken() {
         TokenRequest tokenRequest = TokenRequest.builder()

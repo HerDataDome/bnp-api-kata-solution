@@ -1,67 +1,114 @@
-# Kata API Testing in Java
+**🏨 Restful-Booker API Automation Framework**
 
-API Testing and Java Exercise: Setting up a Basic API Test Automation Framework.
+This repository contains a robust, enterprise-grade API test automation framework built for the automationintesting.online Booking API.
 
-## Objective
-The objective of this exercise is to evaluate your knowledge on API testing and Java by setting up a basic API Test Automation framework using Rest-Assured and Cucumber. You will need to create a test suite that executes a few tests against one endpoint of a hotel booking website and evaluates their responses.
+**🛠️ Technology Stack**
 
-## Background
-The application under test is a simple hotel booking website where you can book a room and also send a form with a request.
+- **Language:** Java 17 (LTS)
 
-The website can be accessed at https://automationintesting.online/.
+- **Build Tool:** Maven
 
-The Swagger documentation for the two endpoints you will be testing can be found at:
+- **API Client:** Rest-Assured
 
-Booking endpoint: https://automationintesting.online/booking/swagger-ui/index.html  
-Optionally, you also have the Authentican endpoint: https://automationintesting.online/auth/swagger-ui/index.html
+- **BDD Framework:** Cucumber Java & JUnit
 
-### Swagger
-This website is an external application which is not in our control.  
-We noticed that the Swagger documentation is sometimes not available on the mentioned URL above.  
-As a backup, you can find the Swagger documentation in this repository at [src/test/resources/spec/booking.yaml](src/test/resources/spec/booking.yaml)
+- **Data Management:** Jackson Databind & Lombok
 
-The Open API Spec file is only supported in the Ultimate version of IntelliJ IDEA. But you can copy the content of the file and paste it in an online Swagger editor like https://editor.swagger.io/ to visualize the API documentation.
+- **Reporting:** Allure (Cucumber JVM)
 
-### Authentication
-In order to authenticate yourself, the required credentials are:
-* Username: `admin`
-* Password: `password`
+**🏗️ Framework Architecture & Design Patterns**
 
-## Task
-You are provided with an extremely basic API test project.
+This framework rejects the "scripting" approach in favor of a Domain-Driven, 3-layer architecture. No layer directly instantiates or calls into a non-adjacent layer, mirroring production microservice design.
 
-Please clone the project and create a new branch with your name. At the end, please push your branch to this project.
+- **Builder Pattern:** Used via Lombok on all Request POJOs. This eliminates boilerplate and allows intentional omission of fields for negative testing.
 
-The project to start from, can be found here: https://github.com/freddyschoeters/API_Testing_kata
+- **Client Pattern:** All HTTP communication is abstracted into domain-specific clients (AuthClient, BookingClient). Step definitions contain zero raw Rest-Assured given() calls.
 
-Your task is to set up an API Test Automation framework from this project using Java, Rest-Assured, and Cucumber (feel free to add more dependencies if required).
+- **Factory Pattern:** TestDataFactory separates *what* data is needed from *how* it is sent.
 
-It is up to you to define the test cases. You don’t need to have a full coverage, but you need to show enough variation on the types of tests that you would need to write and execute, and what to check in the response.
+- **Singleton Pattern:** ConfigManager loads environment properties dynamically. There are zero magic strings or hardcoded URLs in the test code.
 
-This kata has the purpose to evaluate both your technical skills as well as your testing skills.
+**🧪 Test Data & State Management**
 
-`For this task, you will use the booking endpoint.`
+Because this API is a public playground, test data collisions (e.g., 409 Conflict from double-booking a room) are highly likely. To guarantee pipeline stability, the TestDataFactory implements **ThreadLocalRandom** to dynamically generate dates within a safe 6-7 months window and assigns random Room IDs.
 
+State isolation is managed via ScenarioContext , and Cucumber @After hooks ensure every scenario cleans up its own data (via DELETE) to prevent database pollution.
 
-## Requirements
-* Use Java as the programming language
-* Use Rest-Assured as the API testing library
-* Use Cucumber as the BDD framework
-* Design your codebase using a proper Java design pattern
-* Write good tests with correct checks
-* Use Git for version control and push your codebase to an open GitHub repository
-* Make regular commits to demonstrate your progress
+**🚀 How to Run the Tests**
 
+Tests are categorized using Cucumber tags to support distinct CI pipeline stages.
 
-## Deliverables
-* Your branch pushed in the provided project.
-* A comprehensive test suite covering the scenarios mentioned above
-* A well-structured codebase with proper design patterns and comments
-* Regular commits demonstrating your progress
+**Run the Smoke Suite (Fast feedback):**
 
-## Evaluation Criteria
-* Being able to successfully run the tests
-* Correctness and completeness of the test suite
-* Quality of the codebase (design patterns, structure, code quality, …)
-* Use of Rest-Assured and Cucumber features
-* Commit history and progress demonstration
+mvn test "-Dcucumber.filter.tags=@smoke"
+
+**Run the Full Regression Suite:**
+
+mvn test "-Dcucumber.filter.tags=@regression"
+
+**Run the Negative Tests:**
+
+mvn test "-Dcucumber.filter.tags=@negative"
+
+**Run the A Specific Suite with Allure Report:**
+
+mvn test "-Dcucumber.filter.tags=@regression" allure:report
+
+**Generate and View Allure Report:**
+
+mvn allure:serve
+
+**🚀 Viewing the Allure Report**
+
+The committed `allure-report/` folder contains the full test results.
+
+To view: `npx serve allure-report` then open http://localhost:3000
+
+**📊 API Behavior & Specification Discrepancy Report**
+
+During the development of this framework, significant drift was discovered between the provided OpenAPI/YAML specification and the live API\'s behavior.
+
+Because API documentation frequently falls behind live system updates, this framework was deliberately architected to assert the **actual live behavior** of the API to ensure pipeline stability, while explicitly logging contract deviations as Allure step findings.
+
+**1. Specification Discrepancies (Documentation Drift)**
+
+- **Response Structure Flattening (POST /booking)**
+
+  - **Documented:** The YAML indicates the POST response should return a nested booking wrapper.
+
+  - **Live API:** Returns a flat JSON object where bookingid and details exist at the root level.
+
+- **PII Data Stripping (Missing Email/Phone)**
+
+  - **Documented:** The schema states email and phone are required response fields.
+
+  - **Live API:** Intentionally strips email and phone from POST, GET, and PUT responses (likely a later security update). The framework explicitly logs this omission without failing the tests.
+
+- **Status Code Discrepancies**
+
+  - **Live API:** Correctly aligns with REST semantics, returning 201 Created for POST and 200 OK for DELETE (deviating from the YAML docs).
+
+- **Boundary Value Mismatch (firstname & lastname)**
+  - **Documented:** The schema defines a strict maximum length of 18 characters for both `firstname` and `lastname`.
+
+  - **Live API:** The validation layer is significantly looser, accepting strings up to 30 characters (rejecting at 31 with a `"size must be between 3 and 30"` validation error).  
+
+**2. Functional API Anomalies**
+
+- **PUT Updates Silently Ignore roomid**
+
+  - **Live API:** Returns a {"success": true} response when a new roomid is submitted via PUT. However, secondary verification via GET reveals the roomid remains permanently unchanged.
+
+- **Missing Endpoint: PATCH /booking/{id}**
+
+  - **Live API:** The endpoint returns 405 Method Not Allowed. An explicit @bug scenario was written to assert this missing implementation.
+
+- **Lenient Boolean Coercion**
+
+  - **Live API:** When passing an integer 1 for the depositpaid boolean field, the API leniently coerces the binary 1 into true rather than rejecting it with a 400 Bad Request.
+
+**3. Critical Stability Issues**
+
+- **Authentication Parser Crash (500 Internal Server Error)**
+
+  - **Live API:** When sending a malformed token value that still includes the prefix (e.g., Cookie: token=invalid_garbage), the server fails to decrypt it and throws a 500 Internal Server Error. The framework isolates this into dedicated @bug scenarios to document the crash without causing flaky pipeline failures.
