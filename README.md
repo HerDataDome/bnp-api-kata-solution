@@ -26,6 +26,7 @@ This repository contains a robust, enterprise-grade API test automation framewor
 
 **📁 Project Structure**
 
+```
 src/test/java/com/booking/
 ├── clients/          # HTTP clients (AuthClient, BookingClient) — zero boilerplate in step defs
 ├── config/           # ConfigManager (env properties) and ApiEndpoints (path constants)
@@ -43,6 +44,7 @@ src/test/resources/
 test-artifacts/
 ├── allure-report/    # Committed HTML report — 40/40 passing (view with npx serve)
 └── findings/         # API discrepancy evidence with Postman screenshots
+```
 
 **🏗️ Framework Architecture & Design Patterns**
 
@@ -80,7 +82,7 @@ Tests are categorized using Cucumber tags to support distinct CI pipeline stages
 
 - mvn test "-Dcucumber.filter.tags=@negative"
 
-**Run the A Specific Suite with Allure Report:**
+**Run a Specific Suite with Allure Report:**
 
 - mvn test "-Dcucumber.filter.tags=@tag" allure:report
 
@@ -90,10 +92,14 @@ Tests are categorized using Cucumber tags to support distinct CI pipeline stages
 
 **🚀 Viewing the Allure Report**
 
-- The committed `allure-report/` folder contains the full test results.
+- Clone and pull the repository.
 
-- To view: `npx serve allure-report` then open http://localhost:3000
+- The committed `test-artifacts/allure-report/` folder contains the full test results (40/40 passing).
 
+- To view locally: run `npx serve test-artifacts/allure-report` from the project root, then open the URL shown in the terminal under `Local:`.
+
+> **Or** view the live report (updated on every CI run) at:
+> https://herdatadome.github.io/bnp-api-kata-solution/
 
 **🔄CI/CD**
 
@@ -117,7 +123,7 @@ The project includes a GitHub Actions workflow (.github/workflows/ci.yml) that t
 
 - 
 
-**The authoritative proof of the framework\'s correctness is the committed report in test-artifacts/allure-report/**, which was generated from a controlled local run and shows 40/40 tests passing. That report reflects the true state of the automation.
+**The authoritative proof of the framework's correctness is the committed report in test-artifacts/allure-report/**, which was generated from a controlled local run and shows 40/40 tests passing. That report reflects the true state of the automation.
 
 **Viewing the live CI report**
 
