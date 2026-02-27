@@ -1,5 +1,0 @@
-{
-    "errors": [
-        "Failed to create booking"
-    ]
-}

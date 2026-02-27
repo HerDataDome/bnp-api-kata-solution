@@ -1,5 +1,0 @@
-{
-    "errors": [
-        "size must be between 3 and 30"
-    ]
-}
