@@ -1,0 +1,66 @@
+name: API Test Suite
+
+on:
+  push:
+    branches: [ main ]
+    paths:
+      - 'src/**'
+      - 'pom.xml'
+  pull_request:
+    branches: [ main ]
+    paths:
+      - 'src/**'
+      - 'pom.xml'
+
+permissions:
+  contents: write
+  pages: write
+  id-token: write
+
+jobs:
+  test:
+    name: Run API Tests
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Java 17
+        uses: actions/setup-java@v4
+        with:
+          java-version: '17'
+          distribution: 'temurin'
+          cache: maven
+
+      - name: Run full test suite
+        run: mvn clean test
+
+      - name: Generate Allure report
+        if: always()
+        run: mvn allure:report
+
+      - name: Upload Allure results artifact
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: allure-results
+          path: target/allure-results/
+          retention-days: 30
+
+      - name: Upload Allure HTML report artifact
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: allure-report
+          path: target/site/allure-maven-plugin/
+          retention-days: 30
+
+      - name: Deploy Allure report to GitHub Pages
+        if: github.ref == 'refs/heads/main' && always()
+        uses: peaceiris/actions-gh-pages@v3
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: target/site/allure-maven-plugin/
+          publish_branch: gh-pages
+          commit_message: "ci: update Allure report [skip ci]"

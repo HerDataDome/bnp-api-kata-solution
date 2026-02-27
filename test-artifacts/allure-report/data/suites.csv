@@ -1,0 +1,87 @@
+"Status","Start Time","Stop Time","Duration in ms","Parent Suite","Suite","Sub Suite","Test Class","Test Method","Name","Description"
+"passed","Fri Feb 27 18:01:56 CET 2026","Fri Feb 27 18:01:59 CET 2026","3152","","Authentication - Token Generation","","A-01 Successful token generation with valid credentials","","A-01 Successful token generation with valid credentials",""
+"passed","Fri Feb 27 17:51:37 CET 2026","Fri Feb 27 17:51:37 CET 2026","229","","Create Booking - POST /booking","","Validation rejects bookings violating field constraints","","Validation rejects bookings violating field constraints","  As an API consumer
+  I want to create hotel room bookings
+  So that guests can reserve rooms with their details"
+"passed","Fri Feb 27 17:29:30 CET 2026","Fri Feb 27 17:29:31 CET 2026","621","","Authentication - Token Generation","","A-02 Token generation fails with invalid or missing credentials","","A-02 Token generation fails with invalid or missing credentials",""
+"passed","Fri Feb 27 17:29:26 CET 2026","Fri Feb 27 17:29:30 CET 2026","3163","","Authentication - Token Generation","","A-02 Token generation fails with invalid or missing credentials","","A-02 Token generation fails with invalid or missing credentials",""
+"passed","Fri Feb 27 17:29:30 CET 2026","Fri Feb 27 17:29:30 CET 2026","285","","Authentication - Token Generation","","A-02 Token generation fails with invalid or missing credentials","","A-02 Token generation fails with invalid or missing credentials",""
+"passed","Fri Feb 27 17:32:55 CET 2026","Fri Feb 27 17:32:57 CET 2026","2180","","Create Booking - POST /booking","","C-01 Successfully create a booking with all valid fields","","C-01 Successfully create a booking with all valid fields","  As an API consumer
+  I want to create hotel room bookings
+  So that guests can reserve rooms with their details"
+"passed","Fri Feb 27 17:48:26 CET 2026","Fri Feb 27 17:48:27 CET 2026","1225","","Create Booking - POST /booking","","C-08 Document API behaviour when depositpaid is sent as an integer instead of a boolean","","C-08 Document API behaviour when depositpaid is sent as an integer instead of a boolean","  As an API consumer
+  I want to create hotel room bookings
+  So that guests can reserve rooms with their details"
+"passed","Fri Feb 27 18:00:19 CET 2026","Fri Feb 27 18:00:20 CET 2026","860","","Update Booking - PUT and PATCH /booking/{id}","","U-03 Reject PUT requests with invalid auth token value","","U-03 Reject PUT requests with invalid auth token value",""
+"passed","Fri Feb 27 17:29:31 CET 2026","Fri Feb 27 17:29:31 CET 2026","245","","Authentication - Token Generation","","A-02 Token generation fails with invalid or missing credentials","","A-02 Token generation fails with invalid or missing credentials",""
+"passed","Fri Feb 27 17:51:37 CET 2026","Fri Feb 27 17:51:37 CET 2026","248","","Create Booking - POST /booking","","Validation rejects bookings violating field constraints","","Validation rejects bookings violating field constraints","  As an API consumer
+  I want to create hotel room bookings
+  So that guests can reserve rooms with their details"
+"passed","Fri Feb 27 17:47:43 CET 2026","Fri Feb 27 17:47:43 CET 2026","335","","Create Booking - POST /booking","","C-07 Document API behaviour when roomid is sent as a string instead of an integer","","C-07 Document API behaviour when roomid is sent as a string instead of an integer","  As an API consumer
+  I want to create hotel room bookings
+  So that guests can reserve rooms with their details"
+"passed","Fri Feb 27 17:41:23 CET 2026","Fri Feb 27 17:41:23 CET 2026","257","","Create Booking - POST /booking","","C-04 Reject a booking where checkout date is before checkin date","","C-04 Reject a booking where checkout date is before checkin date","  As an API consumer
+  I want to create hotel room bookings
+  So that guests can reserve rooms with their details"
+"passed","Fri Feb 27 17:51:36 CET 2026","Fri Feb 27 17:51:36 CET 2026","237","","Create Booking - POST /booking","","Validation rejects bookings violating field constraints","","Validation rejects bookings violating field constraints","  As an API consumer
+  I want to create hotel room bookings
+  So that guests can reserve rooms with their details"
+"passed","Fri Feb 27 18:08:38 CET 2026","Fri Feb 27 18:08:42 CET 2026","4330","","Delete Booking - DELETE /booking/{id}","","D-02 Reject DELETE requests with missing or malformed auth cookie","","D-02 Reject DELETE requests with missing or malformed auth cookie",""
+"passed","Fri Feb 27 17:46:58 CET 2026","Fri Feb 27 17:46:59 CET 2026","1121","","Create Booking - POST /booking","","C-06 Validation error response contains an errors array","","C-06 Validation error response contains an errors array","  As an API consumer
+  I want to create hotel room bookings
+  So that guests can reserve rooms with their details"
+"passed","Fri Feb 27 17:51:35 CET 2026","Fri Feb 27 17:51:36 CET 2026","581","","Create Booking - POST /booking","","Validation rejects bookings violating field constraints","","Validation rejects bookings violating field constraints","  As an API consumer
+  I want to create hotel room bookings
+  So that guests can reserve rooms with their details"
+"passed","Fri Feb 27 17:50:06 CET 2026","Fri Feb 27 17:50:07 CET 2026","664","","Create Booking - POST /booking","","Successfully create bookings at exact boundary limits","","Successfully create bookings at exact boundary limits","  As an API consumer
+  I want to create hotel room bookings
+  So that guests can reserve rooms with their details"
+"passed","Fri Feb 27 17:50:08 CET 2026","Fri Feb 27 17:50:08 CET 2026","312","","Create Booking - POST /booking","","Successfully create bookings at exact boundary limits","","Successfully create bookings at exact boundary limits","  As an API consumer
+  I want to create hotel room bookings
+  So that guests can reserve rooms with their details"
+"passed","Fri Feb 27 17:50:07 CET 2026","Fri Feb 27 17:50:07 CET 2026","318","","Create Booking - POST /booking","","Successfully create bookings at exact boundary limits","","Successfully create bookings at exact boundary limits","  As an API consumer
+  I want to create hotel room bookings
+  So that guests can reserve rooms with their details"
+"passed","Fri Feb 27 17:54:02 CET 2026","Fri Feb 27 17:54:03 CET 2026","787","","Read Booking - GET /booking/{id}","","R-02 Reject a retrieval request made without an auth token","","R-02 Reject a retrieval request made without an auth token",""
+"passed","Fri Feb 27 17:50:04 CET 2026","Fri Feb 27 17:50:04 CET 2026","431","","Create Booking - POST /booking","","C-09 Reject a booking when a required field is an empty string","","C-09 Reject a booking when a required field is an empty string","  As an API consumer
+  I want to create hotel room bookings
+  So that guests can reserve rooms with their details"
+"passed","Fri Feb 27 18:03:51 CET 2026","Fri Feb 27 18:03:55 CET 2026","3524","","Delete Booking - DELETE /booking/{id}","","D-01 Successfully delete a booking and document 201 vs 200 contract violation","","D-01 Successfully delete a booking and document 201 vs 200 contract violation",""
+"passed","Fri Feb 27 17:58:53 CET 2026","Fri Feb 27 17:58:54 CET 2026","1867","","Update Booking - PUT and PATCH /booking/{id}","","U-01 Successfully replace a booking using PUT and verify changes via GET","","U-01 Successfully replace a booking using PUT and verify changes via GET",""
+"passed","Fri Feb 27 17:42:00 CET 2026","Fri Feb 27 17:42:01 CET 2026","364","","Create Booking - POST /booking","","C-05 Reject a booking where checkout date equals checkin date","","C-05 Reject a booking where checkout date equals checkin date","  As an API consumer
+  I want to create hotel room bookings
+  So that guests can reserve rooms with their details"
+"passed","Fri Feb 27 17:50:07 CET 2026","Fri Feb 27 17:50:07 CET 2026","301","","Create Booking - POST /booking","","Successfully create bookings at exact boundary limits","","Successfully create bookings at exact boundary limits","  As an API consumer
+  I want to create hotel room bookings
+  So that guests can reserve rooms with their details"
+"passed","Fri Feb 27 18:01:59 CET 2026","Fri Feb 27 18:02:00 CET 2026","878","","Update Booking - PUT and PATCH /booking/{id}","","U-05 Document missing PATCH implementation","","U-05 Document missing PATCH implementation",""
+"passed","Fri Feb 27 17:51:36 CET 2026","Fri Feb 27 17:51:37 CET 2026","400","","Create Booking - POST /booking","","Validation rejects bookings violating field constraints","","Validation rejects bookings violating field constraints","  As an API consumer
+  I want to create hotel room bookings
+  So that guests can reserve rooms with their details"
+"passed","Fri Feb 27 18:09:28 CET 2026","Fri Feb 27 18:09:31 CET 2026","3264","","Delete Booking - DELETE /booking/{id}","","D-03 Document API crash (500) when token value is invalid but prefix is present","","D-03 Document API crash (500) when token value is invalid but prefix is present",""
+"passed","Fri Feb 27 17:59:33 CET 2026","Fri Feb 27 17:59:34 CET 2026","804","","Update Booking - PUT and PATCH /booking/{id}","","U-02 Reject PUT requests with malformed auth cookie (missing prefix)","","U-02 Reject PUT requests with malformed auth cookie (missing prefix)",""
+"passed","Fri Feb 27 17:51:37 CET 2026","Fri Feb 27 17:51:38 CET 2026","235","","Create Booking - POST /booking","","Validation rejects bookings violating field constraints","","Validation rejects bookings violating field constraints","  As an API consumer
+  I want to create hotel room bookings
+  So that guests can reserve rooms with their details"
+"passed","Fri Feb 27 18:01:22 CET 2026","Fri Feb 27 18:01:24 CET 2026","1438","","Update Booking - PUT and PATCH /booking/{id}","","U-04 Reject PUT requests for non-existent booking IDs","","U-04 Reject PUT requests for non-existent booking IDs",""
+"passed","Fri Feb 27 17:51:35 CET 2026","Fri Feb 27 17:51:35 CET 2026","265","","Create Booking - POST /booking","","Validation rejects bookings violating field constraints","","Validation rejects bookings violating field constraints","  As an API consumer
+  I want to create hotel room bookings
+  So that guests can reserve rooms with their details"
+"passed","Fri Feb 27 17:55:52 CET 2026","Fri Feb 27 17:55:53 CET 2026","589","","Read Booking - GET /booking/{id}","","R-03 Returns 404 when requesting a booking ID that does not exist","","R-03 Returns 404 when requesting a booking ID that does not exist",""
+"passed","Fri Feb 27 17:33:35 CET 2026","Fri Feb 27 17:33:37 CET 2026","2202","","Create Booking - POST /booking","","C-02 Create booking response body matches the OpenAPI contract schema","","C-02 Create booking response body matches the OpenAPI contract schema","  As an API consumer
+  I want to create hotel room bookings
+  So that guests can reserve rooms with their details"
+"passed","Fri Feb 27 17:53:28 CET 2026","Fri Feb 27 17:53:30 CET 2026","1779","","Read Booking - GET /booking/{id}","","R-01 Successfully retrieve a booking and verify exact data persistence","","R-01 Successfully retrieve a booking and verify exact data persistence",""
+"passed","Fri Feb 27 17:35:32 CET 2026","Fri Feb 27 17:35:34 CET 2026","1530","","Create Booking - POST /booking","","C-03 Successfully create a booking when deposit is not paid","","C-03 Successfully create a booking when deposit is not paid","  As an API consumer
+  I want to create hotel room bookings
+  So that guests can reserve rooms with their details"
+"passed","Fri Feb 27 17:50:07 CET 2026","Fri Feb 27 17:50:08 CET 2026","310","","Create Booking - POST /booking","","Successfully create bookings at exact boundary limits","","Successfully create bookings at exact boundary limits","  As an API consumer
+  I want to create hotel room bookings
+  So that guests can reserve rooms with their details"
+"passed","Fri Feb 27 17:51:36 CET 2026","Fri Feb 27 17:51:36 CET 2026","273","","Create Booking - POST /booking","","Validation rejects bookings violating field constraints","","Validation rejects bookings violating field constraints","  As an API consumer
+  I want to create hotel room bookings
+  So that guests can reserve rooms with their details"
+"passed","Fri Feb 27 17:29:30 CET 2026","Fri Feb 27 17:29:30 CET 2026","303","","Authentication - Token Generation","","A-02 Token generation fails with invalid or missing credentials","","A-02 Token generation fails with invalid or missing credentials",""
+"passed","Fri Feb 27 17:50:04 CET 2026","Fri Feb 27 17:50:06 CET 2026","1771","","Create Booking - POST /booking","","Successfully create bookings at exact boundary limits","","Successfully create bookings at exact boundary limits","  As an API consumer
+  I want to create hotel room bookings
+  So that guests can reserve rooms with their details"
