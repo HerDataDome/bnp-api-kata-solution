@@ -44,7 +44,7 @@ public class BookingSteps {
      *
      * This is the single converter for all DataTable steps — both
      * "I create a booking with the following details:" and
-     * "I have created a booking with the following details:" (booking_read.feature)
+     * "I have created a booking with the following details:" (read_booking.feature)
      * bind to this same method to avoid duplication.
      */
     private Booking buildBookingFromTable(DataTable dataTable) {
@@ -161,7 +161,7 @@ public class BookingSteps {
         Booking booking = TestDataFactory.bookingWithDates(checkin, checkout);
         Response response = bookingClient.createBooking(booking);
         storeResponse(response, booking);
-        // No bookingId to store — date validation errors return 400, not a created booking
+        // No bookingId to store — date validation errors return 409, not a created booking
     }
 
     @Severity(SeverityLevel.NORMAL)
